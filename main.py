@@ -1,10 +1,11 @@
-import ObjectDetection
-import StringGenerator
+import ObjectDetection as oDetect
+import StringGenerator as strGen
 import SpeakOut
 
 def main():
-    objects = ObjectDetection.scan_image('images/dining_table.jpg', 'yololib', True)
-    readString = StringGenerator.generate_read_string(objects)
+    image = oDetect.get_image("images/dining_table.jpg")
+    objects = oDetect.scan_image(image, "yololib", True)
+    readString = strGen.generate_read_string(objects)
     print(readString)
     SpeakOut.speak_text(readString)
 

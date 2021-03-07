@@ -10,16 +10,18 @@ def add_object(objDict, newObj):
 
     return objDict
 
-def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.3):
+def get_image(imagePath):
+    #Load Input Image using CV2 with Path
+    image = cv2.imread(imagePath)
+    return image
+
+def scan_image(image, libPath, showImage=False, minConfidence=0.5, threshold=0.3):
+
     objects = {}
-    args = {}
-    args['image'] = imagePath
-    args['yolo'] = libPath
-    args['confidence'] = confidence
-    args['threshold'] = threshold
+    (H, W) = image.shape[:2]
 
     # Load COCO Class Labels our YOLO Model was trained on
-    labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
+    labelsPath = os.path.sep.join([libPath, "coco.names"])
     LABELS = open(labelsPath).read().strip().split("\n")
 
     # Init list of colors to represent possible class labels
@@ -27,14 +29,11 @@ def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.
     COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
     # Derive paths to YOLO Weights and model configuration
-    weights = os.path.sep.join([args["yolo"], "yolov3.weights"])
-    config = os.path.sep.join([args["yolo"], "yolov3.cfg"])
+    weights = os.path.sep.join([libPath, "yolov3.weights"])
+    config = os.path.sep.join([libPath, "yolov3.cfg"])
 
     # Load YOLO Object Detector trained on COCO dataset - 80 classes
     net = cv2.dnn.readNetFromDarknet(config, weights)
-
-    image = cv2.imread(args["image"]) # Load Input Image
-    (H, W) = image.shape[:2]
 
     # Determine Output Layer names needed from YOLO
     ln = net.getLayerNames()
@@ -56,7 +55,7 @@ def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.
             confidence = scores[classID]
 
             # Filter out Trash Detections
-            if confidence > args["confidence"]:
+            if confidence > minConfidence:
                 # Scale the bounding box to the size of image
                 box = detection[0 : 4] * np.array([W, H, W, H])
                 (centerX, centerY, width, height) = box.astype("int")
@@ -65,6 +64,12 @@ def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.
                 x = int(centerX - (width / 2))
                 y = int(centerY - (height / 2))
 
+                print("Object: ")
+                print(x)
+                print(y)
+                print(width)
+                print(height)
+
                 # Update arrays
                 boxes.append([x, y, int(width), int(height)])
                 confidences.append(float(confidence))
@@ -72,17 +77,15 @@ def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.
 
 
     # Apply non-maxima suppression - Suppresses weak, overlapping bounding boxes
-    idxs = cv2.dnn.NMSBoxes(boxes, confidences, args["confidence"], args["threshold"])
+    idxs = cv2.dnn.NMSBoxes(boxes, confidences, minConfidence, threshold)
 
     # Draw only if there is at least one detection
     if len(idxs) > 0:
-        print("PRINTING OBJECTS WITH CONFIDENCE LEVEL...")
         for i in idxs.flatten():
             # Get Bounding Boxes
             objName = LABELS[classIDs[i]]
             objects = add_object(objects, objName)
             text = "{}: {:.4f}".format(objName, confidences[i])
-            print(text)
 
             if (showImage):
                 (x, y) = (boxes[i][0], boxes[i][1])
@@ -90,7 +93,6 @@ def scan_image(imagePath, libPath, showImage=False, confidence=0.5, threshold=0.
                 color = [int(c) for c in COLORS[classIDs[i]]]
                 cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-        print("DONE PRINTING OBJECTS WITH CONFIDENCE LEVEL...")
 
 
     # Show Output image
