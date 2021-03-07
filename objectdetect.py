@@ -15,7 +15,7 @@ def get_image(imagePath):
     image = cv2.imread(imagePath)
     return image
 
-def scan_image(image, libPath, showImage=False, minConfidence=0.5, threshold=0.3):
+def scan_image(image, libPath, minConfidence=0.5, threshold=0.3):
 
     objects = {}
     (H, W) = image.shape[:2]
@@ -64,12 +64,6 @@ def scan_image(image, libPath, showImage=False, minConfidence=0.5, threshold=0.3
                 x = int(centerX - (width / 2))
                 y = int(centerY - (height / 2))
 
-                print("Object: ")
-                print(x)
-                print(y)
-                print(width)
-                print(height)
-
                 # Update arrays
                 boxes.append([x, y, int(width), int(height)])
                 confidences.append(float(confidence))
@@ -87,17 +81,18 @@ def scan_image(image, libPath, showImage=False, minConfidence=0.5, threshold=0.3
             objects = add_object(objects, objName)
             text = "{}: {:.4f}".format(objName, confidences[i])
 
-            if (showImage):
-                (x, y) = (boxes[i][0], boxes[i][1])
-                (w, h) = (boxes[i][2], boxes[i][3])
-                color = [int(c) for c in COLORS[classIDs[i]]]
-                cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-                cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            (x, y) = (boxes[i][0], boxes[i][1])
+            (w, h) = (boxes[i][2], boxes[i][3])
+            color = [int(c) for c in COLORS[classIDs[i]]]
+            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+            cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
+    returnData = {
+        'processed_image' : image,
+        'objects' : objects
+    }
+    return returnData
 
-    # Show Output image
-    if (showImage):
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
-
-    return objects
+def show_image(image):
+    cv2.imshow("Image", image)
+    cv2.waitKey(0)
