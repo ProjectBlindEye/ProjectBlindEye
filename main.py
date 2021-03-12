@@ -1,7 +1,7 @@
 import objectdetect
 import strgen
 import ocr
-import tts
+# import tts
 import os
 import RPi.GPIO as GPIO
 
@@ -13,6 +13,7 @@ def main():
 
     running = False
 
+    print("program has started")
     while not running:
         if GPIO.input(15) == GPIO.HIGH:
             running = True
@@ -30,12 +31,14 @@ def main():
                 objects = objectData['objects']
                 objectText = strgen.generate_read_string(objects)
 
-                #Speaking Out Data
-                tts.speak_text("PRINTING TEXT IN IMAGE...")
-                tts.speak_text(ocrText)
-
-                tts.speak_text("PRINTING OBJECTS IN IMAGE...")
-                tts.speak_text(objectText)
+                print(ocrText)
+                print(objectText)
+                # #Speaking Out Data
+                # tts.speak_text("PRINTING TEXT IN IMAGE...")
+                # tts.speak_text(ocrText)
+                #
+                # tts.speak_text("PRINTING OBJECTS IN IMAGE...")
+                # tts.speak_text(objectText)
 
                 objectdetect.show_image(processedImage)
 
