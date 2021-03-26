@@ -2,15 +2,8 @@ import time
 from picamera import PiCamera
 
 def take_picture():
-
+    #Takes Picture and saves to path images/pic.jpg
     camera = PiCamera()
-    camera.resolution = (1024, 768)
-    camera.start_preview()
-    time.sleep(2) # Camera warm-up time
-
-    capture_time = int(time.time()) # used for naming file
-    filename = "images/" + str(capture_time) + ".jpg"
-    camera.capture(filename)
-    print("File name:", filename)
-
-    return filename # returns "images/<number>.jpg"
+    time.sleep(2)
+    camera.resolution = (1024, 768) #MIGHT BE CHANGED
+    camera.capture("images/pic.jpg")

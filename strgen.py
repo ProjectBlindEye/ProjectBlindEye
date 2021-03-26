@@ -28,4 +28,6 @@ def generate_read_string(objects):
             else:
                 addedString += ", "
         returnString += addedString
+
+    returnString += ". "
     return returnString

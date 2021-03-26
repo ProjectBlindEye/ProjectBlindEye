@@ -1,53 +1,46 @@
 import objectdetect
 import strgen
 import ocr
-# import tts
+import tts
 import os
+import camera
 import RPi.GPIO as GPIO
 
 def main():
 
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
+    init_gpio()
     running = False
 
-    print("program has started")
+    print("Welcome to Project Blind Eye!")
     while not running:
+
         if GPIO.input(15) == GPIO.HIGH:
             running = True
-            path = "images/TextAndObjects.png"
 
-            if not (file_exists(path)):
-                print(">>>File Does not Exist...")
-            else:
+            camera.take_picture()
+            #---Getting Image
+            image = objectdetect.get_image("images/pic.jpg")
 
-                #Scanning Image
-                image = objectdetect.get_image(path)
-                ocrText = ocr.get_text(image)
-                objectData = objectdetect.scan_image(image, "yololib")
-                processedImage = objectData['processed_image']
-                objects = objectData['objects']
-                objectText = strgen.generate_read_string(objects)
+            #---Scanning Image
+            ocr_text = ocr.get_text(image)
+            object_data = objectdetect.scan_image(image, "yololib")
 
-                print(ocrText)
-                print(objectText)
-                # #Speaking Out Data
-                # tts.speak_text("PRINTING TEXT IN IMAGE...")
-                # tts.speak_text(ocrText)
-                #
-                # tts.speak_text("PRINTING OBJECTS IN IMAGE...")
-                # tts.speak_text(objectText)
+            #---Processing Data
+            #processed_image = objectData['processed_image']
+            objects = object_data['objects']
+            object_text = strgen.generate_read_string(objects)
+            os.remove("images/pic.jpg")
+            read_text = object_text + "The text in the image are as follows. " + ocr_text
 
-                objectdetect.show_image(processedImage)
+            #---Ouput
+            print(read_text)
+            tts.text_to_speech(read_text)
 
             running = False
 
-def file_exists(file):
-    if os.path.exists(file):
-        return True
-    else:
-        return False
+def init_gpio():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(15, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 if __name__ == "__main__": main()
