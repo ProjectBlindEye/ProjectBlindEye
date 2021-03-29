@@ -14,7 +14,7 @@ def main():
     print("Welcome to Project Blind Eye!")
     while not running:
 
-        if GPIO.input(15) == GPIO.HIGH:
+        if GPIO.input(23) == GPIO.HIGH:
             running = True
 
             camera.take_picture()
@@ -41,6 +41,6 @@ def main():
 def init_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(15, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+    GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 if __name__ == "__main__": main()
