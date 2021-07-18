@@ -41,6 +41,6 @@ def main():
 def init_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+    GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 if __name__ == "__main__": main()
