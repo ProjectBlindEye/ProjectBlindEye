@@ -5,7 +5,10 @@ from gtts import gTTS
 vlc_instance = vlc.Instance('--aout=alsa')
 audio_player = vlc_instance.media_player_new()
 
-def text_to_speech(text):
+def read(text):
+
+    #Print
+    print(text)
 
     #Generate Sound from Text
     tts = gTTS(text)

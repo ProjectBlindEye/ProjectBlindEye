@@ -1,9 +1,9 @@
 import time
 from picamera import PiCamera
+CAMERA = PiCamera()
 
 def take_picture():
-    #Takes Picture and saves to path images/pic.jpg
-    camera = PiCamera()
+    #Takes Picture and saves to path pic.jpg
     time.sleep(2)
-    camera.resolution = (1024, 768) #MIGHT BE CHANGED
-    camera.capture("images/pic.jpg")
+    CAMERA.resolution = (1024, 768) #MIGHT BE CHANGED
+    CAMERA.capture("pic.jpg")
