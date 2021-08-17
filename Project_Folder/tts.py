@@ -7,9 +7,6 @@ audio_player = vlc_instance.media_player_new()
 
 def read(text):
 
-    #Print
-    print(text)
-
     #Generate Sound from Text
     tts = gTTS(text)
     tts.save('left.wav')

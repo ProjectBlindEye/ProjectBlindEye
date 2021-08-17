@@ -13,11 +13,9 @@ OBJECT_TEXT = ""
 
 def main():
 
+    init_gpio()
     welcome_thread = threading.Thread(target=welcome)
     welcome_thread.start()
-    init_gpio()
-    welcome_thread.join()
-    print("Ready!")
 
     start = time.time()
     current = time.time()
@@ -31,8 +29,6 @@ def main():
     GPIO.cleanup() # Clean up
 
 def scan():
-
-    print("Processing, Please Wait...")
     camera.take_picture()
     #---Getting Image
     image = objectdetect.get_image("pic.jpg")
@@ -49,11 +45,20 @@ def scan():
     OCR.start()
     OBJDET.start()
 
-    while OCR_TEXT == "" and OBJECT_TEXT == "":
-        continue
+    while True:
+        if OCR_TEXT != "" and OBJECT_TEXT != "":
+            break
+
+    TEMP = OCR_TEXT
+    OCR_TEXT = ""
+    for i in TEMP:
+        if i.isalnum():
+            OCR_TEXT += i
+        else:
+            OCR_TEXT += " "
 
     os.remove("pic.jpg")
-    read_text = OBJECT_TEXT + "The text in the image are as follows. " + OCR_TEXT + ". Press the button again to restart."
+    read_text = OBJECT_TEXT + "The text in the image are as follows. " + OCR_TEXT.strip() + ". Press the button again to restart."
 
     #---Output
     tts.read(read_text)
