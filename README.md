@@ -7,6 +7,7 @@
 
 * Scanner: A design that contains a Raspberry Pi, a Camera, and Speaker to read contents and speak it out
 * Another 3D Printed Stand that allows Raspberry Pi to be mounted on to read paper that is placed in the stand flat
+* Video: https://www.youtube.com/watch?v=FTlSjvPYO6I (Too large to be committed to GitHub)
 
 **Devices Needed**
 
