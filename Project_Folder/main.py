@@ -61,7 +61,10 @@ def scan():
     read_text = OBJECT_TEXT + "The text in the image are as follows. " + OCR_TEXT.strip() + ". Press the button again to restart."
 
     #---Output
-    tts.read(read_text)
+    tts.read_text(OBJECT_TEXT)
+    tts.read_file("../Other_Resources/audio/transition.mp3")
+    tts.read_text(OCR_TEXT.strip())
+    tts.read_file("../Other_Resources/audio/restart.mp3")
 
 def ocr_thread(image):
     global OCR_TEXT
@@ -75,7 +78,7 @@ def object_detect_thread(image):
     OBJECT_TEXT = strgen.generate_read_string(objects)
 
 def welcome():
-    tts.read("Welcome! Press the button to scan your document!")
+    tts.read_file("../Other_Resources/audio/welcome.mp3")
 
 def init_gpio():
     GPIO.setwarnings(False)
