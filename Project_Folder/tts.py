@@ -18,15 +18,10 @@ def read_text(text):
     os.remove("right.wav")
 
     #Play Sound
-    media = vlc_instance.media_new('stereo.wav')
-    audio_player.set_media(media)
-    audio_player.play()
-    time.sleep(1.5)
-    duration = audio_player.get_length() / 1000
-    time.sleep(duration)
+    play_sound('stereo.wav')
     os.remove('stereo.wav')
 
-def read_file(file_path):
+def play_sound(file_path):
     media = vlc_instance.media_new(file_path)
     audio_player.set_media(media)
     audio_player.play()
