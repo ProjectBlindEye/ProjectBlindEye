@@ -29,6 +29,7 @@ def main():
     GPIO.cleanup() # Clean up
 
 def scan():
+    print("Button Pressed")
     camera.take_picture()
     #---Getting Image
     image = objectdetect.get_image("pic.jpg")
@@ -75,7 +76,7 @@ def object_detect_thread(image):
     OBJECT_TEXT = strgen.generate_read_string(objects)
 
 def welcome():
-    tts.play_sound("/audio/welcome.wav")
+    tts.play_sound("./audio/welcome.wav")
 
 def init_gpio():
     GPIO.setwarnings(False)
