@@ -59,7 +59,7 @@ def scan():
             OCR_TEXT += " "
 
     os.remove("pic.jpg")
-    read_text = OBJECT_TEXT + "The text in the image are as follows. " + OCR_TEXT.strip() + ". Press the button again to restart."
+    read_text = OBJECT_TEXT + OCR_TEXT + ". Press the button again to restart."
 
     #---Output
     tts.read_text(read_text)
@@ -67,13 +67,18 @@ def scan():
 def ocr_thread(image):
     global OCR_TEXT
     OCR_TEXT = ocr.get_text(image)
+    if not OCR_TEXT == "":
+        TEMP_TEXT = "The text in the image are as follows. " + OCR_TEXT.strip()
+        OCR_TEXT = TEMP_TEXT
 
 
 def object_detect_thread(image):
     global OBJECT_TEXT
     object_data = objectdetect.scan_image(image, "yololib")
     objects = object_data['objects']
-    OBJECT_TEXT = strgen.generate_read_string(objects)
+    if len(objects) > 0:
+        OBJECT_TEXT = strgen.generate_read_string(objects)
+    else: OBJECT_TEXT = ""
 
 def welcome():
     tts.play_sound("./audio/welcome.wav")
