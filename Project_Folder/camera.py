@@ -11,4 +11,5 @@ def take_picture():
     CAMERA.capture("pic.jpg")
     img = cv2.imread("pic.jpg")
     flipped_img = cv2.rotate(img, cv2.ROTATE_180)
-    cv2.imwrite("pic.jpg", flipped_img)
+    cropped_img = flipped_img[0:0+768, 231:231+591]
+    cv2.imwrite("pic.jpg", cropped_img)
